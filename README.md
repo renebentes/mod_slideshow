@@ -1,7 +1,7 @@
 mod_slideshow
 =============
 
-Módulo para exibição de artigos em Slide Show.
+Módulo para exibição de artigos em uma apresentação de slides.
 
 Requirements
 ------------

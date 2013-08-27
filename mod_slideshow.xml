@@ -30,8 +30,13 @@
 		<fields name="params">
 			<fieldset name="basic">
 				<field name="count" type="text" default="5" label="MOD_SLIDESHOW_FIELD_COUNT_LABEL" description="MOD_SLIDESHOW_FIELD_COUNT_DESC" />
-				<field name="width" type="text" default="640" label="MOD_SLIDESHOW_FIELD_WIDTH_LABEL" description="MOD_SLIDESHOW_FIELD_WIDTH_DESC" />
-				<field name="height" type="text" default="480" label="MOD_SLIDESHOW_FIELD_HEIGHT_LABEL" description="MOD_SLIDESHOW_FIELD_HEIGHT_DESC" />
+				<field name="width" type="text" default="550" label="MOD_SLIDESHOW_FIELD_WIDTH_LABEL" description="MOD_SLIDESHOW_FIELD_WIDTH_DESC" />
+				<field name="height" type="text" default="460" label="MOD_SLIDESHOW_FIELD_HEIGHT_LABEL" description="MOD_SLIDESHOW_FIELD_HEIGHT_DESC" />
+				<field name="quality" type="text" default="90" label="MOD_SLIDESHOW_FIELD_QUALITY_LABEL" description="MOD_SLIDESHOW_FIELD_QUALITY_DESC" />
+				<field name="method" type="list" default="true" label="MOD_SLIDESHOW_FIELD_METHOD_LABEL" description="MOD_SLIDESHOW_FIELD_METHOD_DESC">
+					<option value="true">MOD_SLIDESHOW_VALUE_SMART</option>
+					<option value="false">MOD_SLIDESHOW_VALUE_SIMPLE</option>
+				</field>
 			</fieldset>
 			<fieldset name="filtering" label="MOD_SLIDESHOW_FIELDSET_FILTERING_LABEL">
 				<field name="source" type="radio" default="catid" label="MOD_SLIDESHOW_FIELD_SOURCE_LABEL" description="MOD_SLIDESHOW_FIELD_SOURCE_DESC">
@@ -53,6 +58,25 @@
 					<option value="p_dsc">MOD_SLIDESHOW_VALUE_RECENT_PUBLISHED</option>
 					<option value="mc_dsc">MOD_SLIDESHOW_VALUE_RECENT_TOUCHED</option>
 				</field>
+			</fieldset>
+			<fieldset name="show" label="MOD_SLIDESHOW_FIELDSET_SHOW_LABEL">
+				<field name="display_arrows" type="radio" class="btn-group" default="1" label="MOD_SLIDESHOW_FIELD_DISPLAY_ARROWS_LABEL" description="MOD_SLIDESHOW_FIELD_DISPLAY_ARROWS_DESC">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field name="display_caption" type="radio" class="btn-group" default="1" label="MOD_SLIDESHOW_FIELD_DISPLAY_CAPTION_LABEL" description="MOD_SLIDESHOW_FIELD_DISPLAY_CAPTION_DESC">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field name="show_title" type="radio" class="btn-group" default="1" label="MOD_SLIDESHOW_FIELD_SHOWTITLE_LABEL" description="MOD_SLIDESHOW_FIELD_SHOWTITLE_DESC">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field name="show_description" type="radio" class="btn-group" default="1" label="MOD_SLIDESHOW_FIELD_DESCRIPTION_LABEL" description="MOD_SLIDESHOW_FIELD_DESCRIPTION_DESC">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field name="description_chars" type="text" default="100" label="MOD_SLIDESHOW_FIELD_CHARS_LABEL" description="MOD_SLIDESHOW_FIELD_CHARS_DESC" />
 			</fieldset>
 			<fieldset name="advanced">
 				<field name="enable_bootstrap" type="radio" class="btn-group" default="0" label="MOD_SLIDESHOW_ENABLE_BOOTSTRAP_LABEL" description="MOD_SLIDESHOW_ENABLE_BOOTSTRAP_DESC">
