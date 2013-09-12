@@ -27,6 +27,8 @@ You can [report a bug or request a feature here](http://github.com/renebentes/mo
 
 TODO
 ----
+* Implementar métodos de redimensionamento
+* Estilo de navegação
 
 Release Notes
 -------------
@@ -40,4 +42,5 @@ Release Notes
 	! Relevant Message
 
 ######1.0
+	! Módulo funcional
 	! Estruturação do módulo

@@ -127,8 +127,8 @@ abstract class modSlideshowHelper
 
 			if (!empty($item->slide))
 			{
-				$file = self::_getThumbnail($item->slide, $params->get('width') . 'x' . $params->get('height'), 'cache/mod_slideshow', $item->id, $params->get('method'), $params->get('quality'));
-				$item->slide = '<img src="' . str_replace(JPATH_SITE . '/', JUri::root(), $file) .'" title="' . $item->title . '" alt="' . $item->title .'" />';
+				$file = self::_getThumbnail($item->slide, $params->get('width') . 'x' . $params->get('height'), 'cache/mod_slideshow', $item->id, $params->get('quality'));
+				$item->slide = '<img src="' . $file .'" title="' . $item->title . '" alt="' . $item->title .'" />';
 			}
 		}
 
@@ -175,192 +175,61 @@ abstract class modSlideshowHelper
 	}
 
 	/**
-	 * Method for resizing images.
+	 * Get the thumbnail path.
 	 *
-	 * @param   string   $image   	The path to full image
-	 * @param   string   $size    	The new size. Example: array('50x50','120x250');
-	 * @param   string   $folder  	The thumbnail destination folder
-	 * @param 	string   $filename 	The thumbnail filename
-	 * @param   boolean  $method  	The thumbnail smart resize.
-	 * @param   integer  quality 	The quality of the thumbnail creation
-	 * @return  mixed 				Path of the new image file.
+	 * @param  string  $image    Path to source image
+	 * @param  string  $size     The thumbnail size. Ex: '500x400'
+	 * @param  string  $folder   The thumbnail folder
+	 * @param  string  $filename The thumbnail file name
+	 * @param  integer quality   The thumbnail quality
 	 *
-	 * @since   2.5
+	 * @return string            The thumbnail path
+	 *
+	 * @throws ArgumentException
+	 * @throws InvalidArgumentException
 	 */
-	private static function _getThumbnail($image, $size = '550x460', $folder, $filename = '', $method = true, $quality = 95)
+	private static function _getThumbnail($image, $size = '550x460', $folder = null, $filename = null, $quality = 90)
 	{
-		jimport('joomla.filesystem.folder');
 		jimport('joomla.filesystem.file');
-		jimport('joomla.image.image');
+		require_once dirname(__FILE__) . '/libraries/phpthumb/ThumbLib.inc.php';
 
-		$fileTypes = array('jpg', 'jpeg', 'gif', 'png');
+		if (empty($image))
+		{
+			throw new ArgumentException(JText::_("MOD_SLIDESHOW_ERROR_ARGUMENT_IMAGE_EMPTY"));
+		}
+
+		if (empty($folder))
+		{
+			$folder = 'cache/mod_slideshow';
+		}
+
 		$folder = JPATH_SITE . '/' . $folder;
 
-		if(JFile::exists($image))
-		{
-			// Check or try to create folder
-			if (JFolder::exists($folder) || JFolder::create($folder))
-			{
-				// Create file to previne direct access
-				$data = "<html>\n<body bgcolor=\"#FFFFFF\">\n</body>\n</html>";
-				JFile::write($folder . "/index.html", $data);
-
-				$sourceName = JFile::getName($image);
-				$extension = JFile::getExt($sourceName);
-				$filename = empty($filename) ? $sourceName : $filename . '.' .$extension;
-
-				if (!in_array(strtolower($extension), $fileTypes))
-				{
-					return false;
-				}
-
-				// Determine thumb image filename
-				if (strtolower(substr($filename, -4, 4)) == 'jpeg')
-				{
-					$thumbname = substr($filename, 0, -4) . 'jpg';
-				}
-				elseif (strtolower(substr($filename, -3, 3)) == 'gif' || strtolower(substr($filename, -3, 3)) == 'png' || strtolower(substr($filename, -3, 3)) == 'jpg')
-				{
-					$thumbname = substr($filename, 0, -3) . 'jpg';
-				}
-
-				//$thumbname = str_replace('.jpg', '_' . $width . 'x' . $height . '.jpg' . $extension, $filename);
-				$thumbname = $folder . '/' . $thumbname;
-
-				// begin by getting the details of the original
-				list($width, $height, $type) = getimagesize(JPATH_SITE . '/' . $image);
-
-				// create an image resource for the original
-				switch($type)
-				{
-					case 1 :
-						$source = @ imagecreatefromgif($image);
-						if (!$source)
-						{
-							throw new Exception(JText::_('MOD_SLIDESHOW_ERROR_GIF'), 500);
-						}
-						break;
-					case 2 :
-						$source = imagecreatefromjpeg($image);
-						break;
-					case 3 :
-						$source = imagecreatefrompng($image);
-						break;
-					default :
-						$source = NULL;
-				}
-
-				if (!$source)
-				{
-					throw new Exception(JText::_('MOD_SLIDESHOW_ERROR_IMAGES'), 500);
-				}
-
-				// Get thumb size
-				$size = explode('x', strtolower($size));
-				if (count($size) != 2)
-				{
-					return false;
-				}
-
-				// calculate thumbnails
-				$thumbnail = self::_getDimension($width, $height, $size[0], $size[1], $method);
-
-				// create an image resource for the thumbnail
-				$thumb = imagecreatetruecolor($thumbnail['width'], $thumbnail['height']);
-
-				// create the resized copy
-				imagecopyresampled($thumb, $source, 0, 0, 0, 0, $thumbnail['width'], $thumbnail['height'], $width, $height);
-
-				// convert and save all thumbs to .jpg
-				$success = imagejpeg($thumb, $thumbname, $quality);
-
-				// Bail out if there is a problem in the GD conversion
-				if (!$success)
-					return false;
-
-				// remove the image resources from memory
-				imagedestroy($source);
-				imagedestroy($thumb);
-				return $thumbname;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Calculate thumbnail dimensions
-	 *
-	 * @param  integer $srcWidth    Width of the source image.
-	 * @param  integer $srcHeight   Height of the source image.
-	 * @param  integer $thbWidth   	Width of the thumbnail.
-	 * @param  integer $thbHeight  	Height of the source image.
-	 * @param  boolean $smartResize The thumbnail smart resize.
-	 *
-	 * @return array              	Array with the dimensions of the thumbnail.
-	 */
-	private static function _getDimension($srcWidth, $srcHeight, $thbWidth, $thbHeight, $smartResize)
-	{
-		if ($smartResize)
-		{
-			// thumb ratio bigger that container ratio
-			if ($srcWidth / $srcHeight > $thbWidth / $thbHeight)
-			{
-				$thumb_width = $thbHeight * $srcWidth / $srcHeight;
-				$thumb_height = $thbHeight;
-			}
-			else
-			{
-				// wide containers
-				if ($thbWidth >= $thbHeight)
-				{
-					$thumb_width = $thbWidth;
-					$thumb_height = $thbWidth * $srcHeight / $srcWidth;
-				}
-				else
-				{
-					// wide thumbs
-					if ($srcWidth > $srcHeight)
-					{
-						$thumb_width = $thbHeight * $srcWidth / $srcHeight;
-						$thumb_height = $thbHeight;
-					}
-					// high thumbs
-					else
-					{
-						$thumb_width = $thbWidth;
-						$thumb_height = $thbWidth * $srcHeight / $srcWidth;
-					}
-				}
-			}
-
-		}
-		else
+		// Check or try to create folder
+		if (JFolder::exists($folder) || JFolder::create($folder))
 		{
 
-			if ($srcWidth > $height)
+			// Desired thumbnail size
+			$size = explode('x', strtolower($size));
+
+			if (count($size) != 2)
 			{
-				$thumb_width = $thbWidth;
-				$thumb_height = $thbWidth * $srcheight / $srcWidth;
-			}
-			elseif ($srcWidth < $srcheight)
-			{
-				$thumb_width = $thbHeight * $srcWidth / $srcheight;
-				$thumb_height = $thbHeight;
-			}
-			else
-			{
-				$thumb_width = $thbWidth;
-				$thumb_height = $thbHeight;
+				throw new InvalidArgumentException(JText::sprintf('MOD_SLIDESHOW_ERROR_ARGUMENT_SIZE_INVALID', $size));
 			}
 
+			// Generate thumb name
+			$filename = empty($filename) ? pathinfo($image, PATHINFO_FILENAME) : $filename;
+			$extension = pathinfo($image, PATHINFO_EXTENSION);
+
+			$filename = $filename . '.' . $extension;
+			$file = $folder . '/' . $filename;
+
+			$thumbnail = PhpThumbFactory::create($image);
+			$thumbnail->setoptions(array('jpegQuality' => $quality,'resizeUp' => true));
+			$thumbnail->adaptiveResize($size[0], $size[1]);
+			$thumbnail->save($file);
 		}
 
-		$thumbnail = array();
-		$thumbnail['width'] = round($thumb_width);
-		$thumbnail['height'] = round($thumb_height);
-
-		return $thumbnail;
-
+		return str_replace(JPATH_SITE . '/', JUri::root(), $file);
 	}
 }

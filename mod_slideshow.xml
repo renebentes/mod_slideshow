@@ -10,8 +10,9 @@
 	<version>1.0</version>
 	<description>MOD_SLIDESHOW_XML_DESCRIPTION</description>
 	<files>
-		<filename module="mod_slideshow">mod_slideshow.php</filename>
+		<folder>libraries</folder>
 		<folder>tmpl</folder>
+		<filename module="mod_slideshow">mod_slideshow.php</filename>
 		<filename>mod_slideshow.xml</filename>
 		<filename>helper.php</filename>
 		<filename>index.html</filename>
@@ -19,6 +20,7 @@
 	<media folder="media" destination="mod_slideshow">
 		<folder>css</folder>
 		<folder>images</folder>
+		<folder>img</folder>
 		<folder>js</folder>
 		<filename>index.html</filename>
 	</media>
@@ -30,13 +32,9 @@
 		<fields name="params">
 			<fieldset name="basic">
 				<field name="count" type="text" default="5" label="MOD_SLIDESHOW_FIELD_COUNT_LABEL" description="MOD_SLIDESHOW_FIELD_COUNT_DESC" />
-				<field name="width" type="text" default="550" label="MOD_SLIDESHOW_FIELD_WIDTH_LABEL" description="MOD_SLIDESHOW_FIELD_WIDTH_DESC" />
-				<field name="height" type="text" default="460" label="MOD_SLIDESHOW_FIELD_HEIGHT_LABEL" description="MOD_SLIDESHOW_FIELD_HEIGHT_DESC" />
+				<field name="width" type="text" default="700" label="MOD_SLIDESHOW_FIELD_WIDTH_LABEL" description="MOD_SLIDESHOW_FIELD_WIDTH_DESC" />
+				<field name="height" type="text" default="350" label="MOD_SLIDESHOW_FIELD_HEIGHT_LABEL" description="MOD_SLIDESHOW_FIELD_HEIGHT_DESC" />
 				<field name="quality" type="text" default="90" label="MOD_SLIDESHOW_FIELD_QUALITY_LABEL" description="MOD_SLIDESHOW_FIELD_QUALITY_DESC" />
-				<field name="method" type="list" default="true" label="MOD_SLIDESHOW_FIELD_METHOD_LABEL" description="MOD_SLIDESHOW_FIELD_METHOD_DESC">
-					<option value="true">MOD_SLIDESHOW_VALUE_SMART</option>
-					<option value="false">MOD_SLIDESHOW_VALUE_SIMPLE</option>
-				</field>
 			</fieldset>
 			<fieldset name="filtering" label="MOD_SLIDESHOW_FIELDSET_FILTERING_LABEL">
 				<field name="source" type="radio" default="catid" label="MOD_SLIDESHOW_FIELD_SOURCE_LABEL" description="MOD_SLIDESHOW_FIELD_SOURCE_DESC">
@@ -80,6 +78,10 @@
 			</fieldset>
 			<fieldset name="advanced">
 				<field name="enable_bootstrap" type="radio" class="btn-group" default="0" label="MOD_SLIDESHOW_ENABLE_BOOTSTRAP_LABEL" description="MOD_SLIDESHOW_ENABLE_BOOTSTRAP_DESC">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field name="enable_jquery" type="radio" class="btn-group" default="0" label="MOD_SLIDESHOW_ENABLE_JQUERY_LABEL" description="MOD_SLIDESHOW_ENABLE_JQUERY_DESC">
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>

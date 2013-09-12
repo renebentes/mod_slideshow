@@ -6,20 +6,34 @@
  * @license     GNU General Public License version 2 or later; see http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-$doc = JFactory::getDocument();
+if ($params->get('enable_jquery'))
+{
+	JHtml::_('script', 'mod_slideshow/js/jquery-1.10.2.min.js', array(), true);
+}
+
 if ($params->get('enable_bootstrap'))
 {
-	$doc->addStyleSheet(JUri::root() . '/media/mod_slideshow/css/bootstrap-responsive.min.css');
-	$doc->addStyleSheet(JUri::root() . '/media/mod_slideshow/css/bootstrap.min.css');
-	$doc->addScript(JUri::root() . '/media/mod_slideshow/js/bootstrap.min.js');
-	//$doc->addScript(JUri::root() . '/media/mod_slideshow/js/jquery-1.10.2.min.js');
-
+	JHtml::_('stylesheet', 'mod_slideshow/css/bootstrap.min.css', array(), true);
+	//$doc->addStyleSheet(JUri::root() .'media/mod_slideshow/css/bootstrap-responsive.min.css');
+	JHtml::_('script', 'mod_slideshow/js/bootstrap.min.js', array(), true);
 }
 
 // No direct access.
 defined('_JEXEC') or die;
 
 ?>
+<script type="text/javascript">
+	jQuery.noConflict();
+
+	(function($) {
+  		$(function() {
+    		$('#slideshow<?php echo $module->id; ?>').carousel({
+    			interval: 3000
+    		});
+ 		});
+	})(jQuery);
+</script>
+
 <div id="slideshow<?php echo $module->id;?>" class="carousel slide">
 <?php if ($params->get('count') > 0) : ?>
 	<ol class="carousel-indicators">
@@ -34,9 +48,11 @@ defined('_JEXEC') or die;
 			<?php echo $item->slide; ?>
 		<?php if($params->get("display_caption", 1)) : ?>
 			<div class="carousel-caption">
-		    	<h4><?php echo $item->title; ?></h4>
+		    	<h4>
+		    		<a href="<?php echo $item->link; ?>"><?php echo $item->title; ?></a>
+		    	</h4>
 		    	<p>
-		    		<?php echo JHtml::_('string.truncate', $item->introtext, $params->get('description_chars')); ?>
+		    		<?php echo JHtml::_('string.truncate', $item->introtext, $params->get('description_chars'), false, false); ?>
 		    	</p>
 		    </div>
 		<?php endif; ?>
