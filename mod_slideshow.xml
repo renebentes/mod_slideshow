@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>renebentes@yahoo.com.br</authorEmail>
 	<authorUrl></authorUrl>
-	<version>1.0</version>
+	<version>1.0.1</version>
 	<description>MOD_SLIDESHOW_XML_DESCRIPTION</description>
 	<files>
 		<folder>libraries</folder>
@@ -20,7 +20,6 @@
 	<media folder="media" destination="mod_slideshow">
 		<folder>css</folder>
 		<folder>images</folder>
-		<folder>img</folder>
 		<folder>js</folder>
 		<filename>index.html</filename>
 	</media>
@@ -77,14 +76,6 @@
 				<field name="description_chars" type="text" default="100" label="MOD_SLIDESHOW_FIELD_CHARS_LABEL" description="MOD_SLIDESHOW_FIELD_CHARS_DESC" />
 			</fieldset>
 			<fieldset name="advanced">
-				<field name="enable_bootstrap" type="radio" class="btn-group" default="0" label="MOD_SLIDESHOW_ENABLE_BOOTSTRAP_LABEL" description="MOD_SLIDESHOW_ENABLE_BOOTSTRAP_DESC">
-					<option value="1">JYES</option>
-					<option value="0">JNO</option>
-				</field>
-				<field name="enable_jquery" type="radio" class="btn-group" default="0" label="MOD_SLIDESHOW_ENABLE_JQUERY_LABEL" description="MOD_SLIDESHOW_ENABLE_JQUERY_DESC">
-					<option value="1">JYES</option>
-					<option value="0">JNO</option>
-				</field>
 				<field name="layout" type="modulelayout" label="JFIELD_ALT_LAYOUT_LABEL" description="JFIELD_ALT_MODULE_LAYOUT_DESC" />
 				<field name="moduleclass_sfx" type="text" label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL" description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
 				<field name="cache" type="list" default="1" label="COM_MODULES_FIELD_CACHING_LABEL" description="COM_MODULES_FIELD_CACHING_DESC">

@@ -7,8 +7,8 @@ Requirements
 ------------
 
 * [Joomla! 2.5+](http://www.joomla.org);
-* [Twitter Bootstrap 2.3.2](http://www.getbootstrap.com).
-* [jQuery 1.8.3+](www.jquery.com)
+* Template based on the [Twitter Bootstrap](http://www.getbootstrap.com).
+* [jQuery](www.jquery.com)
 
 Author
 ------
@@ -27,6 +27,7 @@ You can [report a bug or request a feature here](http://github.com/renebentes/mo
 
 TODO
 ----
+* Incluir novas fontes de conteúdo
 * Implementar métodos de redimensionamento
 * Estilo de navegação
 
@@ -41,6 +42,10 @@ Release Notes
 	# Secure fix
 	! Relevant Message
 
-######1.0
+######1.0.1
+  - Parâmetros de carregamento adicional de bibliotecas JavaScript e CSS
+  + Requisito funcionamento apenas em templates baseado em Twitter Bootstrap
+  ^ Layout modificado com base na atualização do Twitter Bootstrap
+######1.0.0
 	! Módulo funcional
 	! Estruturação do módulo
