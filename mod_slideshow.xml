@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" version="2.5.0" client="site" method="upgrade">
+<extension type="module" version="3.3.6" client="site" method="upgrade">
 	<name>mod_slideshow</name>
 	<author>Rene Bentes Pinto</author>
 	<creationDate>20/08/2013</creationDate>
@@ -7,9 +7,11 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>renebentes@yahoo.com.br</authorEmail>
 	<authorUrl></authorUrl>
-	<version>1.0.1</version>
+	<version>1.0.0</version>
 	<description>MOD_SLIDESHOW_XML_DESCRIPTION</description>
+	<scriptfile>script.php</scriptfile>
 	<files>
+		<folder>assets</folder>
 		<folder>libraries</folder>
 		<folder>tmpl</folder>
 		<filename module="mod_slideshow">mod_slideshow.php</filename>
@@ -17,13 +19,9 @@
 		<filename>helper.php</filename>
 		<filename>index.html</filename>
 	</files>
-	<media folder="media" destination="mod_slideshow">
-		<folder>css</folder>
-		<folder>images</folder>
-		<folder>js</folder>
-		<filename>index.html</filename>
-	</media>
 	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.mod_slideshow.ini</language>
+		<language tag="en-GB">en-GB/en-GB.mod_slideshow.sys.ini</language>
 		<language tag="pt-BR">pt-BR/pt-BR.mod_slideshow.ini</language>
 		<language tag="pt-BR">pt-BR/pt-BR.mod_slideshow.sys.ini</language>
 	</languages>
@@ -36,7 +34,7 @@
 				<field name="quality" type="text" default="90" label="MOD_SLIDESHOW_FIELD_QUALITY_LABEL" description="MOD_SLIDESHOW_FIELD_QUALITY_DESC" />
 			</fieldset>
 			<fieldset name="filtering" label="MOD_SLIDESHOW_FIELDSET_FILTERING_LABEL">
-				<field name="source" type="radio" default="catid" label="MOD_SLIDESHOW_FIELD_SOURCE_LABEL" description="MOD_SLIDESHOW_FIELD_SOURCE_DESC">
+				<field name="source" type="radio" class="btn-group btn-group-yesno" default="catid" label="MOD_SLIDESHOW_FIELD_SOURCE_LABEL" description="MOD_SLIDESHOW_FIELD_SOURCE_DESC">
 					<option value="catid">JCATEGORY</option>
 					<option value="Itemid">JGLOBAL_ARTICLES</option>
 				</field>
@@ -54,26 +52,28 @@
 					<option value="m_dsc">MOD_SLIDESHOW_VALUE_RECENT_MODIFIED</option>
 					<option value="p_dsc">MOD_SLIDESHOW_VALUE_RECENT_PUBLISHED</option>
 					<option value="mc_dsc">MOD_SLIDESHOW_VALUE_RECENT_TOUCHED</option>
+					<option value="random">MOD_SLIDESHOW_VALUE_RECENT_RAND</option>
 				</field>
 			</fieldset>
 			<fieldset name="show" label="MOD_SLIDESHOW_FIELDSET_SHOW_LABEL">
-				<field name="display_arrows" type="radio" class="btn-group" default="1" label="MOD_SLIDESHOW_FIELD_DISPLAY_ARROWS_LABEL" description="MOD_SLIDESHOW_FIELD_DISPLAY_ARROWS_DESC">
+				<field name="display_arrows" type="radio" class="btn-group btn-group-yesno" default="1" label="MOD_SLIDESHOW_FIELD_DISPLAY_ARROWS_LABEL" description="MOD_SLIDESHOW_FIELD_DISPLAY_ARROWS_DESC">
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>
-				<field name="display_caption" type="radio" class="btn-group" default="1" label="MOD_SLIDESHOW_FIELD_DISPLAY_CAPTION_LABEL" description="MOD_SLIDESHOW_FIELD_DISPLAY_CAPTION_DESC">
+				<field name="display_caption" type="radio" class="btn-group btn-group-yesno" default="1" label="MOD_SLIDESHOW_FIELD_DISPLAY_CAPTION_LABEL" description="MOD_SLIDESHOW_FIELD_DISPLAY_CAPTION_DESC">
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>
-				<field name="show_title" type="radio" class="btn-group" default="1" label="MOD_SLIDESHOW_FIELD_SHOWTITLE_LABEL" description="MOD_SLIDESHOW_FIELD_SHOWTITLE_DESC">
+				<field name="show_title" type="radio" class="btn-group btn-group-yesno" default="1" label="MOD_SLIDESHOW_FIELD_SHOWTITLE_LABEL" description="MOD_SLIDESHOW_FIELD_SHOWTITLE_DESC">
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>
-				<field name="show_description" type="radio" class="btn-group" default="1" label="MOD_SLIDESHOW_FIELD_DESCRIPTION_LABEL" description="MOD_SLIDESHOW_FIELD_DESCRIPTION_DESC">
+				<field name="show_description" type="radio" class="btn-group btn-group-yesno" default="1" label="MOD_SLIDESHOW_FIELD_DESCRIPTION_LABEL" description="MOD_SLIDESHOW_FIELD_DESCRIPTION_DESC">
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>
 				<field name="description_chars" type="text" default="100" label="MOD_SLIDESHOW_FIELD_CHARS_LABEL" description="MOD_SLIDESHOW_FIELD_CHARS_DESC" />
+				<field name="interval" type="text" default="5000" label="MOD_SLIDESHOW_FIELD_INTERVAL_LABEL" description="MOD_SLIDESHOW_FIELD_INTERVAL_DESC" />
 			</fieldset>
 			<fieldset name="advanced">
 				<field name="layout" type="modulelayout" label="JFIELD_ALT_LAYOUT_LABEL" description="JFIELD_ALT_MODULE_LAYOUT_DESC" />

@@ -2,12 +2,14 @@
 /**
  * @package     Slideshow
  * @subpackage  mod_slideshow
- * @copyright   Copyright (C) 2013 Rene Bentes Pinto, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see http://www.gnu.org/licenses/gpl-2.0.html
+ * @copyright   Copyright (C) 2013 - 2015 Rene Bentes Pinto, Inc. All rights reserved.
+ * @license     MIT License; see LICENSE
  */
 
 // No direct access.
 defined('_JEXEC') or die;
+
+jimport('joomla.filesystem.folder');
 
 require_once JPATH_SITE . '/components/com_content/helpers/route.php';
 
@@ -65,7 +67,8 @@ abstract class modSlideshowHelper
 		$model->setState('filter.access', $access);
 
 		// Filter by source param
-		switch ($params->get('source')) {
+		switch ($params->get('source'))
+		{
 			case 'Itemid':
 				$model->setState('filter.article_id', explode(',', $params->get('Itemid')));
 				break;
@@ -98,6 +101,7 @@ abstract class modSlideshowHelper
 			'mc_dsc' => 'CASE WHEN (a.modified = ' . $db->quote($db->getNullDate()) . ') THEN a.created ELSE a.modified END',
 			'c_dsc' => 'a.created',
 			'p_dsc' => 'a.publish_up',
+			'random' => 'RAND()',
 		);
 
 		$ordering = JArrayHelper::getValue($order_map, $params->get('ordering'), 'a.publish_up');
@@ -110,7 +114,7 @@ abstract class modSlideshowHelper
 
 		foreach ($items as &$item)
 		{
-			$item->slug = $item->id . ':' . $item->alias;
+			$item->slug    = $item->id . ':' . $item->alias;
 			$item->catslug = $item->catid . ':' . $item->category_alias;
 
 			if ($access || in_array($item->access, $authorised))
@@ -128,7 +132,16 @@ abstract class modSlideshowHelper
 			if (!empty($item->slide))
 			{
 				$file = self::_getThumbnail($item->slide, $params->get('width') . 'x' . $params->get('height'), 'cache/mod_slideshow', $item->id, $params->get('quality'));
-				$item->slide = '<img src="' . $file .'" title="' . $item->title . '" alt="' . $item->title .'" />';
+				$item->slide = '<img class="img-responsive center-block" src="' . $file .'" title="' . $item->title . '" alt="' . $item->title .'" />';
+			}
+			else
+			{
+				$holder = array(JPATH_SITE . '/'. $app->getTemplate(false) . '/js', JPATH_SITE . '/' . $app->getTemplate(false) . '/assets/js');
+				jimport('joomla.filesystem.path');
+				if (JPath::find($holder, 'holder.js'))
+				{
+					$item->slide = '<img class="img-responsive center-block" data-src="' . JPath::find($holder, 'holder.js') . '" title="' . $item->title . '" alt="' . $item->title .'" />';
+				}
 			}
 		}
 
@@ -144,6 +157,8 @@ abstract class modSlideshowHelper
 	 */
 	private static function _getImage($item)
 	{
+		jimport('joomla.filesystem.folder');
+
 		$images = json_decode($item->images);
 		if (isset($images->image_intro) && isset($images->image_fulltext))
 		{
@@ -171,6 +186,38 @@ abstract class modSlideshowHelper
 			}
 		}
 
+		if (empty($item->slide))
+		{
+			$regex = "/{gallery}(.+?){\/gallery}/is";
+			preg_match($regex, $item->introtext, $matches);
+			if (count($matches))
+			{
+				$item->slide = $matches[1];
+			}
+			else
+			{
+				preg_match($regex, $item->fulltext, $matches);
+				$item->slide = count($matches) ? $matches[1] : '';
+			}
+
+			$files = JFolder::files(JPATH_SITE . '/images/' . $item->slide);
+			if (!$files)
+			{
+				return $item;
+			}
+
+			$fileTypes = array('jpg', 'jpeg', 'gif', 'png');
+			foreach ($files as $file)
+			{
+				$fileInfo = pathinfo($file);
+				if (array_key_exists('extension', $fileInfo) && in_array(strtolower($fileInfo['extension']), $fileTypes))
+				{
+					$item->slide = JPATH_SITE . '/images/' . $item->slide . '/' . $file;
+					break;
+				}
+			}
+		}
+
 		return $item;
 	}
 
@@ -191,7 +238,7 @@ abstract class modSlideshowHelper
 	private static function _getThumbnail($image, $size = '550x460', $folder = null, $filename = null, $quality = 90)
 	{
 		jimport('joomla.filesystem.file');
-		require_once dirname(__FILE__) . '/libraries/phpthumb/ThumbLib.inc.php';
+		require_once __DIR__ . '/libraries/phpthumb/ThumbLib.inc.php';
 
 		if (empty($image))
 		{
@@ -218,16 +265,28 @@ abstract class modSlideshowHelper
 			}
 
 			// Generate thumb name
-			$filename = empty($filename) ? pathinfo($image, PATHINFO_FILENAME) : $filename;
+			$filename  = empty($filename) ? pathinfo($image, PATHINFO_FILENAME) : $filename;
 			$extension = pathinfo($image, PATHINFO_EXTENSION);
 
 			$filename = $filename . '.' . $extension;
-			$file = $folder . '/' . $filename;
+			$file     = $folder . '/' . $filename;
 
-			$thumbnail = PhpThumbFactory::create($image);
+			$image = new JImage($image);
+
+			try
+			{
+				$thumbnail = $image->cropResize($size[0], $size[1], false);
+				$thumbnail->toFile($folder . '/' . $filename);
+			}
+			catch (Exception $e)
+			{
+				JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+			}
+
+			/*$thumbnail = PhpThumbFactory::create($image);
 			$thumbnail->setoptions(array('jpegQuality' => $quality,'resizeUp' => true));
 			$thumbnail->adaptiveResize($size[0], $size[1]);
-			$thumbnail->save($file);
+			$thumbnail->save($file);*/
 		}
 
 		return str_replace(JPATH_SITE . '/', JUri::root(), $file);
